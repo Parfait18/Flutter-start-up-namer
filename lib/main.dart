@@ -35,12 +35,19 @@ class _RandomWordsState extends State<RandomWords> {
   //style font object
  final _biggerFont = const TextStyle(color: Color(0xFF426894), fontSize: 18);
 
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         appBar: AppBar(
           title: const Text('Startup Name Generator'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.list),
+              onPressed: _pushSaved,
+              tooltip: 'Saved Suggestions',
+            ),
+          ],
         ),
         //listview for wordpair
         body: ListView.builder(
@@ -85,6 +92,40 @@ class _RandomWordsState extends State<RandomWords> {
             }
         ));
   }
+
+  void _pushSaved() {
+    Navigator.of(context).push(
+
+      MaterialPageRoute<void>(
+        builder: (context) {
+          final tiles = _saved.map(
+                (pair) {
+              return ListTile(
+                title: Text(
+                  pair.asPascalCase,
+                  style: _biggerFont,
+                ),
+              );
+            },
+          );
+          final divided = tiles.isNotEmpty
+              ? ListTile.divideTiles(
+            context: context,
+            tiles: tiles,
+          ).toList()
+              : <Widget>[];
+
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Saved Suggestions'),
+            ),
+            body: ListView(children: divided),
+          );
+        },
+      ),
+    );
+  }
+
 }
 class RandomWords extends StatefulWidget {
   const RandomWords({Key? key}) : super(key: key);
